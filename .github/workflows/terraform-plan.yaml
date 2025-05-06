@@ -44,5 +44,5 @@ jobs:
         message: |
           ### Terraform Plan Output
           ```
-          ${{ steps.plan.outputs.stdout || 'Terraform plan failed or had no changes.' }}
+          ${{ steps.plan.outputs.stdout }}
           ```
