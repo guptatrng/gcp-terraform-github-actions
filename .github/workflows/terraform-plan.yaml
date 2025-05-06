@@ -17,11 +17,6 @@ jobs:
     - name: Checkout
       uses: actions/checkout@v4
 
-    - name: Setup Terraform
-      uses: hashicorp/setup-terraform@v2
-      with:
-        terraform_version: 1.10.0
-
     - name: Setup GCP CLI
       run: |
         gcloud auth activate-service-account --key-file="${HOME}/gcp-key.json"
