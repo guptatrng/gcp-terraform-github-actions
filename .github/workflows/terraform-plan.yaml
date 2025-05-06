@@ -18,20 +18,24 @@ jobs:
       uses: actions/checkout@v4
 
     - name: Setup GCP CLI
+      if: success()
       run: |
         echo "GOOGLE_APPLICATION_CREDENTIALS=$HOME/gcp-key.json" >> $GITHUB_ENV
 
     - name: Terraform Init
+      if: success()
       run: |
         echo $GOOGLE_APPLICATION_CREDENTIALS
         terraform init
 
     - name: Terraform Plan
+      if: success()
       id: plan
       run: terraform plan --var-file=values.tfvars
       continue-on-error: true
 
     - name: Post Terraform Plan as PR Comment
+      if: success()
       uses: marocchino/sticky-pull-request-comment@v2
       with:
         message: |
