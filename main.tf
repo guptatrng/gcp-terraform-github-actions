@@ -3,7 +3,7 @@ resource google_compute_instance "github-action-test" {
     machine_type = "n1-standard-1"
     network_interface {
       network = "guptaji-tech-network"
-      subnetwork = "guptaji-test-subnet"
+      subnetwork = "guptaji-tech-subnet"
     }
     boot_disk {
       initialize_params {
