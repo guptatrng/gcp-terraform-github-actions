@@ -44,5 +44,5 @@ jobs:
         message: |
           ### Terraform Plan Output
           ```
-          ${{ steps.plan.outputs.content }}
+          ${{ steps.plan.outputs.stdout }}
           ```
