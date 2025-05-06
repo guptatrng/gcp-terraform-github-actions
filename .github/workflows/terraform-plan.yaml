@@ -18,6 +18,7 @@ jobs:
       uses: actions/checkout@v4
 
     - name: Setup GCP CLI
+      run: | 
       env:
         GOOGLE_APPLICATION_CREDENTIALS: ${HOME}/gcp-key.json
 
