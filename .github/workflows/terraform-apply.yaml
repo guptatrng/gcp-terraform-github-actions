@@ -4,6 +4,9 @@ on:
   push:
     branches: [master]
 
+permissions:
+  pull-requests: write
+
 jobs:
   terraform-apply:
     runs-on: runner-1
@@ -17,13 +20,11 @@ jobs:
 
       - name: setup gcp credentials
         run: |
-          echo "${{ secrets.GCP_SA_KEY }}" > "${HOME}/gcp-key.json"
-          gcloud auth activate-service-account --key-file="${HOME}/gcp-key.json"
-          gcloud config set project kubernetes-test-456013
+          echo "GOOGLE_APPLICATION_CREDENTIALS=$HOME/gcp-key.json" >> $GITHUB_ENV
 
       - name: terraform init
         run: terraform init
 
       - name: terraform apply
-        run: terraform apply --auto-approve
+        run: terraform apply --auto-approve --var-file=values.tfvars
     

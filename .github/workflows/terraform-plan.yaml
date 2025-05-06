@@ -2,7 +2,10 @@ name: 'Terraform_Plan'
 
 on:
   pull_request:
-    branches: [master]   
+    branches: [master]
+
+permissions:
+  pull-requests: write
 
 jobs:
   terraform_plan:
@@ -17,33 +20,29 @@ jobs:
     - name: Checkout
       uses: actions/checkout@v4
 
-    - name: Setup Terraform
-      uses: hashicorp/setup-terraform@v2
-      with:
-        terraform_version: 1.10.0
-
     - name: Setup GCP CLI
+      if: success()
       run: |
-        echo "${{ secrets.GCP_SA_KEY }}" > "${HOME}/gcp-key.json"
-        gcloud auth activate-service-account --key-file="${HOME}/gcp-key.json"
-        gcloud config set project kubernetes-test-456013
+        echo "GOOGLE_APPLICATION_CREDENTIALS=$HOME/gcp-key.json" >> $GITHUB_ENV
 
     - name: Terraform Init
-      run: terraform init
-
-    - name: Terraform Format
-      run: terraform fmt -check
+      if: success()
+      run: |
+        echo $GOOGLE_APPLICATION_CREDENTIALS
+        terraform init
 
     - name: Terraform Plan
+      if: success()
       id: plan
-      run: terraform plan --var-file=value.tfvars
+      run: terraform plan --var-file=values.tfvars
       continue-on-error: true
 
     - name: Post Terraform Plan as PR Comment
+      if: success()
       uses: marocchino/sticky-pull-request-comment@v2
       with:
         message: |
           ### Terraform Plan Output
           ```
-          ${{ steps.plan.outputs.stdout || 'Terraform plan failed or had no changes.' }}
+          ${{ steps.plan.outputs.content }}
           ```
