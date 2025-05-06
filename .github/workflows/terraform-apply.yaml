@@ -1,0 +1,29 @@
+name: 'Terraform Apply'
+
+on:
+  push:
+    branches: [master]
+
+jobs:
+  terraform-apply:
+    runs-on: runner-1
+
+    steps:
+      - name: checkout repository
+        uses: actions/checkout@v3
+
+      - name: setup terraform
+        uses: hashicorp/setup-terraform@v2
+
+      - name: setup gcp credentials
+        run: |
+          echo "${{ secrets.GCP_SA_KEY }}" > "${HOME}/gcp-key.json"
+          gcloud auth activate-service-account --key-file="${HOME}/gcp-key.json"
+          gcloud config set project kubernetes-test-456013
+
+      - name: terraform init
+        run: terraform init
+
+      - name: terraform apply
+        run: terraform apply --auto-approve
+    
